@@ -4,7 +4,7 @@ let currentButton = null; // Store the currently active play/pause button
 // Fetch profile data when the page loads
 window.onload = async function () {
     try {
-        const response = await fetch('http://localhost:5000/api/profile', {
+        const response = await fetch(' https://mood-backend-api.onrender.com/api/profile', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -93,7 +93,7 @@ async function displayGeneratedPlaylist(playlist) {
 // Function to fetch song details based on song IDs
 async function fetchSongDetails(songIds) {
     try {
-        const response = await fetch('http://localhost:5000/api/songs', {
+        const response = await fetch(' https://mood-backend-api.onrender.com/api/songs', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ async function fetchSongDetails(songIds) {
         console.log('Backend response:', data); // Log backend response for debugging
 
         // Add the base URL for the song files
-        const baseAudioUrl = 'http://localhost:5000/uploads/songs/';
+        const baseAudioUrl = ' https://mood-backend-api.onrender.com/uploads/songs/';
         const songsWithUrls = data.songs.map(song => {
             // Extract the file name from the full file path
             const fileName = song.file.split('\\').pop(); // Get the last part of the file path
@@ -236,7 +236,7 @@ async function generatePlaylist(mood) {
             throw new Error('User is not logged in');
         }
 
-        const response = await fetch('http://localhost:5000/api/playlist/mood', {
+        const response = await fetch(' https://mood-backend-api.onrender.com/api/playlist/mood', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token, // Send the token in the Authorization header

@@ -1,6 +1,6 @@
 async function fetchProfileData() {
     try {
-        const response = await fetch('http://localhost:5000/api/profile', {
+        const response = await fetch(' https://mood-backend-api.onrender.com/api/profile', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -63,7 +63,7 @@ async function generatePlaylist(mood) {
             throw new Error('User is not logged in');
         }
 
-        const response = await fetch('http://localhost:5000/api/playlist/mood', {
+        const response = await fetch(' https://mood-backend-api.onrender.com/api/playlist/mood', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,  // Send the token in the Authorization header

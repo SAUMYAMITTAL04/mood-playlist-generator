@@ -7,7 +7,7 @@ const FormData = require('form-data');
 const baseFolder = path.join(__dirname, 'uploads', 'songs');
 
 // API endpoint for uploading songs
-const uploadEndpoint = 'http://localhost:5000/api/songs/upload';
+const uploadEndpoint = ' https://mood-backend-api.onrender.com/api/songs/upload';
 
 // Function to upload a single song
 async function uploadSong(filePath, mood) {
