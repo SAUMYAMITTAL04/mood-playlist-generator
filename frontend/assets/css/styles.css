@@ -1,0 +1,285 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #fbfbfb;
+    color: #333;
+    line-height: 1.6;
+    padding: 0px;
+}
+
+/* Header */
+header {
+    background-color: #c6e7ff;
+    padding: 15px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation */
+nav ul {
+    list-style: none;
+    text-align: center;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+nav ul li a:hover {
+    color: #ffddae;
+}
+
+/* Main Header */
+h1, h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 1.8rem;
+}
+
+/* Form Styles */
+form {
+    background-color: #d4f6ff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: 40px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+}
+
+form input:focus {
+    border-color: #ffddae;
+}
+
+form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ffddae;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #c6e7ff;
+}
+
+/* Mood Button Styles */
+.mood-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.mood-buttons button {
+    padding: 15px 25px;
+    background-color: #ffddae;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.mood-buttons button:hover {
+    background-color: #c6e7ff;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 15px 0;
+    background-color: #c6e7ff;
+    margin-top: 40px;
+}
+
+footer p {
+    color: #333;
+}
+
+/* Playlist Styles */
+#playlist {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+
+#playlist li {
+    background-color: #d4f6ff;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#playlist li button {
+    padding: 5px 10px;
+    background-color: #ffddae;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#playlist li button:hover {
+    background-color: #c6e7ff;
+}
+
+/* Profile Styles */
+.profile-info {
+    background-color: #d4f6ff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.profile-info ul {
+    list-style: none;
+    padding: 0;
+}
+
+.profile-info ul li {
+    padding: 10px 0;
+}
+
+.profile-info ul li a {
+    text-decoration: none;
+    color: #ffddae;
+}
+
+.profile-info ul li a:hover {
+    color: #333;
+}
+
+/* Page-specific Styles */
+
+/* Login and Signup Pages */
+form {
+    max-width: 350px; /* Adjust form size */
+}
+
+form input {
+    font-size: 1.1rem;
+}
+
+form button {
+    font-size: 1.1rem;
+}
+
+/* Playlist Page */
+#playlist {
+    margin-top: 40px;
+}
+
+#playlist li {
+    width: 70%;
+    margin: 20px auto;
+}
+
+/* Profile Page */
+.profile-info {
+    max-width: 800px;
+}
+
+.profile-info ul li {
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Adjustments for Small Screens */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    header {
+        padding: 10px 0;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    form {
+        max-width: 90%;
+    }
+
+    .mood-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #playlist li {
+        width: 90%;
+    }
+
+    .profile-info {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    .mood-buttons button {
+        padding: 12px 22px;
+    }
+
+    form button {
+        padding: 10px;
+    }
+}

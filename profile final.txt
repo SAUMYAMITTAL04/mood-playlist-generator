@@ -1,0 +1,247 @@
+// Fetch profile data when the page loads
+window.onload = async function () {
+    try {
+        const response = await fetch('http://localhost:5000/api/profile', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch profile data');
+        }
+
+        const data = await response.json();
+        const { user, playlists = [], uploadedSongs = [] } = data; // Default to empty arrays
+
+        // Update profile info
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('email').textContent = user.email;
+
+        // Display playlists section
+        const playlistContainer = document.getElementById('playlistContainer');
+        playlists.forEach(playlist => {
+            const playlistDiv = document.createElement('div');
+            playlistDiv.classList.add('playlist');
+            playlistDiv.innerHTML = `
+                <h3>${playlist.name}</h3>
+                <a href="playlist.html?id=${playlist._id}">View Playlist</a>
+            `;
+            playlistContainer.appendChild(playlistDiv);
+        });
+
+        // Display uploaded songs section
+        const uploadedSongsList = document.getElementById('uploadedSongsList');
+        uploadedSongs.forEach(song => {
+            const songLi = document.createElement('li');
+            songLi.textContent = song.name;
+            uploadedSongsList.appendChild(songLi);
+        });
+
+        // Display most recent generated playlist
+        const generatedPlaylist = JSON.parse(localStorage.getItem('generatedPlaylist'));
+        if (generatedPlaylist && generatedPlaylist.songs && generatedPlaylist.songs.length > 0) {
+            displayGeneratedPlaylist(generatedPlaylist);
+        } else {
+            playlistContainer.innerHTML += 'No generated playlist available.';
+        }
+
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+};
+
+// Function to display the generated playlist
+async function displayGeneratedPlaylist(playlist) {
+    const playlistContainer = document.getElementById('playlistContainer');
+    const playlistSongsContainer = document.getElementById('playlistSongsContainer');
+
+    playlistContainer.innerHTML = `<h3>Generated Playlist - ${playlist.name}</h3>`;
+
+    // Fetch song details from the backend based on song IDs
+    const songDetails = await fetchSongDetails(playlist.songs);
+
+    if (songDetails.length > 0) {
+        let playlistHtml = '<ul>';
+        songDetails.forEach(song => {
+            playlistHtml += `
+                <li>
+                    <span>${song.title} by ${song.artist}</span>
+                    <button class="play-song" data-song-url="${song.audioUrl}">Play</button>
+                </li>
+            `;
+        });
+        playlistHtml += '</ul>';
+        playlistSongsContainer.innerHTML = playlistHtml;
+
+        // Add play functionality to the play button
+        document.querySelectorAll('.play-song').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const songUrl = event.currentTarget.getAttribute('data-song-url');
+                playSong(songUrl);
+            });
+        });
+    } else {
+        playlistSongsContainer.innerHTML = 'No songs available in this playlist.';
+    }
+}
+
+// Function to fetch song details based on song IDs
+/*async function fetchSongDetails(songIds) {
+    try {
+        const response = await fetch('http://localhost:5000/api/songs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ids: songIds })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch song details');
+        }
+
+        const data = await response.json();
+
+        // Add the base URL for the song files
+        const baseAudioUrl = 'http://localhost:5000/uploads/songs/';
+        const songsWithUrls = data.songs.map(song => ({
+            ...song,
+            audioUrl: baseAudioUrl + song.fileName // Assuming the song object contains 'fileName'
+        }));
+
+        return songsWithUrls;
+    } catch (error) {
+        console.error('Error fetching song details:', error);
+        return [];
+    }
+}
+
+// Function to play a song
+/*function playSong(songUrl) {
+    const audio = new Audio(songUrl); // Assuming songUrl is a valid URL to the audio file
+    audio.play();
+}*/
+async function fetchSongDetails(songIds) {
+    try {
+        const response = await fetch('http://localhost:5000/api/songs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ids: songIds })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch song details');
+        }
+
+        const data = await response.json();
+        console.log('Backend response:', data); // Log backend response for debugging
+
+        // Add the base URL for the song files
+        const baseAudioUrl = 'http://localhost:5000/uploads/songs/';
+        const songsWithUrls = data.songs.map(song => {
+            // Extract the file name from the full file path
+            const fileName = song.file.split('\\').pop(); // Get the last part of the file path
+            return {
+                ...song,
+                audioUrl: baseAudioUrl + fileName // Append the file name to the base URL
+            };
+        });
+
+        return songsWithUrls;
+    } catch (error) {
+        console.error('Error fetching song details:', error);
+        return [];
+    }
+}
+
+let currentAudio = null;  // Store the current audio instance
+
+function playSong(songUrl) {
+    // If a song is already playing, stop it
+    if (currentAudio) {
+        currentAudio.pause();
+    }
+
+    console.log("Playing song from URL:", songUrl); // Log the URL for debugging
+    currentAudio = new Audio(songUrl); // Create new audio instance
+    currentAudio.play().catch(error => console.error("Error playing audio:", error));
+
+    // Toggle play/pause button
+    togglePlayPauseButton(true);
+}
+function togglePlayPauseButton(isPlaying) {
+    const playButtons = document.querySelectorAll('.play-song');
+    playButtons.forEach(button => {
+        if (isPlaying) {
+            button.textContent = 'Pause';  // Change text to 'Pause' when playing
+            button.removeEventListener('click', playSong);
+            button.addEventListener('click', pauseSong);  // Change event to pause
+        } else {
+            button.textContent = 'Play';  // Change text back to 'Play'
+            button.removeEventListener('click', pauseSong);
+            button.addEventListener('click', playSong);  // Change event to play
+        }
+    });
+}
+function pauseSong() {
+    if (currentAudio) {
+        currentAudio.pause();
+    }
+    togglePlayPauseButton(false);  // Update button to show 'Play' again
+}
+
+/*function playSong(songUrl) {
+    console.log("Playing song from URL:", songUrl); // Log the URL for debugging
+    const audio = new Audio(songUrl);
+    audio.play().catch(error => console.error("Error playing audio:", error));
+}*/
+
+
+// Listen for mood button clicks and generate a playlist
+document.querySelectorAll('.mood-btn').forEach(button => {
+    button.addEventListener('click', async (event) => {
+        const mood = event.currentTarget.getAttribute('data-mood');
+        await generatePlaylist(mood); // Call function to generate playlist based on mood
+    });
+});
+
+// Function to generate a playlist based on mood
+async function generatePlaylist(mood) {
+    try {
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+        if (!token) {
+            throw new Error('User is not logged in');
+        }
+
+        const response = await fetch('http://localhost:5000/api/playlist/mood', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token, // Send the token in the Authorization header
+                'Content-Type': 'application/json', // Assuming you send JSON data
+            },
+            body: JSON.stringify({ mood }) // Send the mood as the request body
+        });
+
+        if (!response.ok) {
+            throw new Error('Error generating playlist');
+        }
+
+        const data = await response.json();
+        console.log('Playlist generated:', data.playlist);
+
+        // Store the generated playlist in localStorage
+        localStorage.setItem('generatedPlaylist', JSON.stringify(data.playlist));
+
+        // Redirect to playlist page
+        window.location.href = 'playlist.html'; // Directly redirect to playlist.html
+
+    } catch (error) {
+        console.error('Error:', error.message);
+        alert('An error occurred while generating the playlist.');
+    }
+}
+

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile - Mood Playlist Generator</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
+    <style>
+        
+        .social-links {
+            margin-top: 10px;
+        }
+        
+        .social-links a {
+            margin: 0 15px;
+        }
+        
+        .social-links img {
+            width: 30px;
+            height: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .social-links img:hover {
+            transform: scale(1.2);
+        }
+        h1,h2{
+            color: #f9f9f9;
+        }
+        .playlists{
+            color: #f1f1f1;
+        }
+        body {
+            
+            background-image: url(assets/images/intense.jpg);
+            background-size: cover; /* Ensures the image covers the entire background */
+            background-position: center; /* Keeps the image centered */
+            background-repeat: no-repeat; 
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header nav ul {
+            list-style: none;
+            background-color: #040f1b;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+
+        header nav ul li {
+            margin: 0 10px;
+        }
+
+        header nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-header h1 {
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .playlist-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .playlist {
+            background-color: #3bd0fa;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            width: calc(50% - 10px);
+        }
+
+        .playlist h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .playlist a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #3e93e7;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .uploaded-songs ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .uploaded-songs ul li {
+            background-color: #f1f1f1;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px;
+            background-image: url(assets/images/blue\ flowers.jpg);
+            color: #fff;
+        }
+        
+        
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .playlist {
+                width: calc(100% - 10px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .playlist {
+                width: 100%;
+            }
+
+            .profile-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .profile-header p {
+                font-size: 1rem;
+            }
+        }
+        .play-song {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-song:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .play-song[data-state="pause"] {
+            background-color: #36f4e7; /* Red for pause */
+            color: white;
+        }
+
+        .play-song[data-state="play"] {
+            background-color: #4aeb8d; /* Green for play */
+            color: white;
+        }
+
+        .play-song[data-state="loading"] {
+            background-color: #f1c40f; /* Yellow for loading */
+            color: white;
+            pointer-events: none;
+        }
+
+        .play-song[data-state="loading"]::after {
+            content: " ⏳";
+        }
+
+        /* Optional: Style for playlist items */
+        #playlistSongsContainer ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #playlistSongsContainer li {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="signup.html">Signup</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="profile-header">
+            <div class="profile-info">
+                <h1>Welcome, <span id="username">User123</span>!</h1>
+                <p><strong>Email:</strong> <span id="email"></span></p>
+            </div>
+        </section>
+    
+        <section class="playlists">
+            <h1>Your Generated Playlist</h1>
+            
+            <div id="playlistContainer"></div> 
+            <div id="playlistSongsContainer"></div>
+
+            
+        </section>
+        <section class="upload-song">
+            <h2>Upload a New Song</h2>
+            <form id="uploadSongForm" enctype="multipart/form-data">
+                <div>
+                    <label for="songTitle">Title:</label>
+                    <input type="text" id="songTitle" name="title" required>
+                </div>
+                <div>
+                    <label for="songArtist">Artist:</label>
+                    <input type="text" id="songArtist" name="artist" required>
+                </div>
+                <div>
+                    <label for="songMood">Mood:</label>
+                    <input type="text" id="songMood" name="mood" required>
+                </div>
+                <div>
+                    <label for="songFile">MP3 File:</label>
+                    <input type="file" id="songFile" name="file" accept=".mp3" required>
+                </div>
+                <button type="submit">Upload Song</button>
+            </form>
+            <p id="uploadMessage" style="color: red;"></p>
+        </section>
+        
+    </main>
+    
+    <footer class="footer-container">
+        <p>&copy; 2024 Mood Playlist Generator</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com"><img src="assets/images/facebook.jpg" alt="Facebook"></a>
+            <a href="https://www.twitter.com"><img src="assets/images/x logo.jpg" alt="Twitter"></a>
+            <a href="https://www.instagram.com"><img src="assets/images/insta logo.jpg" alt="Instagram"></a>
+        </div>
+    </footer>
+    <script src="assets/js/profile.js"></script>
+</body>
+</html>
+
