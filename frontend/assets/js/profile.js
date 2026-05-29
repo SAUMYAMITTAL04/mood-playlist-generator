@@ -212,6 +212,33 @@ function playSong(songUrl, button) {
     currentSongUrl = songUrl; // Save this exact URL string to compare next time
     currentButton = button;   // Save this specific button reference
 
+    const progressBar = document.getElementById('progressBar');
+
+    if (progressBar) {
+        // 1. Make the slider move automatically as the music plays
+        currentAudio.addEventListener('timeupdate', () => {
+            // Only update if the audio actually has a length
+            if (currentAudio.duration) {
+                // Calculate the percentage of the song that has played
+                const progressPercent = (currentAudio.currentTime / currentAudio.duration) * 100;
+                progressBar.value = progressPercent;
+            }
+        });
+
+        // 2. Make the song jump when the user drags the slider
+        progressBar.addEventListener('input', () => {
+            if (currentAudio && currentAudio.duration) {
+                // Calculate the new time in seconds based on where the user dragged the slider
+                const seekTime = (progressBar.value / 100) * currentAudio.duration;
+                currentAudio.currentTime = seekTime;
+            }
+        });
+    }
+// --- NEW PROGRESS BAR CODE ENDS HERE ---
+
+// Play the new song and update its button to 'Pause'
+
+
     // Play the new song and update its button to 'Pause'
     currentAudio.play().catch(error => console.error("Error playing audio:", error));
     button.textContent = 'Pause';
