@@ -36,7 +36,7 @@ In a standard media environment, playlist curation relies on heavy manual interv
 1. **The Client Layer (Vanilla JS & HTML5):** A lightweight, highly responsive frontend that handles asynchronous state management, JWT authentication storage, and native media playback controls.
 2. **The API & Routing Engine (Express.js):** A high-performance REST API hosted on Render that intercepts client payloads, manages CORS security policies, and orchestrates user authentication logic via bcrypt.
 3. **The Persistent Vault (MongoDB Atlas):** A cloud-native NoSQL database utilizing Mongoose ORM to persistently store user credentials, hashed passwords, and structured media metadata.
-4. **The Media Ingestion Pipeline (Multer Middleware):** A backend utility designed to intercept raw `.mp3` binary uploads from the client, validate file types, and temporarily store them on the server's local file system for immediate streaming access.
+
 
 ---
 
