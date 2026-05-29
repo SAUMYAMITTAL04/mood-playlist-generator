@@ -1,5 +1,6 @@
 let currentAudio = null;  // Store the currently playing audio
 let currentButton = null; // Store the currently active play/pause button
+let currentSongUrl = null;
 
 // Fetch profile data when the page loads
 window.onload = async function () {
@@ -127,66 +128,17 @@ async function fetchSongDetails(songIds) {
 }
 
 // Play or pause the song based on the button clicked
-/*function playSong(songUrl, button) {
-    const audio = new Audio(songUrl); // Create a new audio instance for the clicked song
 
-    // If a song is already playing and the current song is not the same as the one clicked
-    if (currentAudio && currentAudio.src !== songUrl) {
-        // Stop the current song
-        currentAudio.pause();
-        currentButton.textContent = 'Play'; // Reset the button to 'Play'
-    }
-
-    // If the song is not already playing, create a new audio instance
-    if (!currentAudio || currentAudio.src !== songUrl) {
-        // Create a new audio instance for the clicked song
-        currentAudio = audio;
-
-        // Play the new song
-        currentAudio.play().catch(error => console.error("Error playing audio:", error));
-
-        // Change the button text to "Pause"
-        button.textContent = 'Pause';
-
-        // Store the current button reference for later use
-        currentButton = button;
-
-        // Listen for when the song ends, so we can reset the button
-        currentAudio.onended = () => {
-            currentButton.textContent = 'Play'; // Reset the button to 'Play' when the song ends
-            currentAudio = null; // Reset the current audio to null
-        };
-    } else {
-        // If the song is already playing, pause it
-        if (!currentAudio.paused) {
-            currentAudio.pause();
-            button.textContent = 'Play'; // Change the button text to 'Play'
-        } else {
-            // If the song is paused, resume it
-            currentAudio.play().catch(error => console.error("Error playing audio:", error));
-            button.textContent = 'Pause'; // Change the button text to 'Pause'
-        }
-    }
-
-    // Reset other buttons' text to 'Play'
-    document.querySelectorAll('.play-song').forEach(otherButton => {
-        if (otherButton !== button) {
-            otherButton.textContent = 'Play'; // Reset other buttons to 'Play'
-        }
-    });
-}*/
+/*
 function playSong(songUrl, button) {
     const audio = new Audio(songUrl); // Create a new audio instance for the clicked song
-
     // If a song is already playing and the current song is not the same as the one clicked
     if (currentAudio && currentAudio.src !== songUrl) {
         // Stop the current song
         currentAudio.pause();
         currentButton.textContent = 'Play'; // Reset the button to 'Play'
         currentButton.setAttribute('data-state', 'play'); // Reset the button state
-    }
-
-    // If the song is not already playing, create a new audio instance
+    }   // If the song is not already playing, create a new audio instance
     if (!currentAudio || currentAudio.src !== songUrl) {
         currentAudio = audio;
 
@@ -195,12 +147,8 @@ function playSong(songUrl, button) {
 
         // Change the button text to "Pause"
         button.textContent = 'Pause';
-        button.setAttribute('data-state', 'pause'); // Set the button state to 'pause'
-
-        // Store the current button reference for later use
-        currentButton = button;
-
-        // Listen for when the song ends, so we can reset the button
+        button.setAttribute('data-state', 'pause'); // Set the button state to 'pause'     // Store the current button reference for later use
+        currentButton = button;   // Listen for when the song ends, so we can reset the button
         currentAudio.onended = () => {
             currentButton.textContent = 'Play'; // Reset the button to 'Play' when the song ends
             currentButton.setAttribute('data-state', 'play'); // Reset button state to 'play'
@@ -227,6 +175,53 @@ function playSong(songUrl, button) {
             otherButton.setAttribute('data-state', 'play'); // Reset other buttons' state to 'play'
         }
     });
+}
+*/
+
+function playSong(songUrl, button) {
+    // SCENARIO 1: The user clicked the exact SAME song that is already loaded
+    if (currentAudio && currentSongUrl === songUrl) {
+        if (currentAudio.paused) {
+            // Song is paused, so resume it
+            currentAudio.play().catch(error => console.error("Error playing audio:", error));
+            button.textContent = 'Pause';
+            button.setAttribute('data-state', 'pause');
+        } else {
+            // Song is playing, so pause it
+            currentAudio.pause();
+            button.textContent = 'Play';
+            button.setAttribute('data-state', 'play');
+        }
+        return; // Exit the function early so it doesn't load a new audio instance!
+    }
+
+    // SCENARIO 2: The user clicked a DIFFERENT song (or the very first song)
+    if (currentAudio) {
+        // Stop the old song that was playing
+        currentAudio.pause(); 
+        
+        // Reset the old button visually back to 'Play'
+        if (currentButton) {
+            currentButton.textContent = 'Play'; 
+            currentButton.setAttribute('data-state', 'play');
+        }
+    }
+
+    // Load the brand new song
+    currentAudio = new Audio(songUrl);
+    currentSongUrl = songUrl; // Save this exact URL string to compare next time
+    currentButton = button;   // Save this specific button reference
+
+    // Play the new song and update its button to 'Pause'
+    currentAudio.play().catch(error => console.error("Error playing audio:", error));
+    button.textContent = 'Pause';
+    button.setAttribute('data-state', 'pause');
+
+    // Automatically reset the button visually when the song finishes playing naturally
+    currentAudio.onended = () => {
+        button.textContent = 'Play';
+        button.setAttribute('data-state', 'play');
+    };
 }
 // Function to generate a playlist based on mood
 async function generatePlaylist(mood) {
