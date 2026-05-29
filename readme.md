@@ -102,4 +102,4 @@ Open frontend/index.html in your browser (or utilize the VS Code Live Server ext
 
 
 
-Developed as a decoupled, full-stack proof-of-concept for modernizing interactive media streaming infrastructures.
+*******Developed as a decoupled, full-stack proof-of-concept for modernizing interactive media streaming infrastructures.*******
